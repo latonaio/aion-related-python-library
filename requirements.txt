@@ -1,0 +1,6 @@
+protobuf>=3.11.3
+python-dateutil
+grpcio
+mysqlclient
+pymongo
+retry

@@ -1,0 +1,17 @@
+version: '3'
+services:
+  test:
+    image: ubuntu 
+    tty: true
+    volumes:
+      - ./src/aion-related-python-library:/var/test
+    dns: 8.8.8.8
+    environment: 
+      TZ: 'Asia/Tokyo'
+    working_dir: /var/test
+    command: >
+      bash -c 
+        "apt-get update &&
+        apt-get install -y python3 python3-pip python3-dev libmysqlclient-dev &&
+        apt-get update &&
+        pip3 install ."
