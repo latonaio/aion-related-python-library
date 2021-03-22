@@ -136,7 +136,7 @@ class KanbanConnection:
 
     def run(self):
         callback = _Callback()
-        self.channel = grpc.insecure_channel(self.addr, options=[('grpc.keepalive_time_ms', 5000), ('grpc.keepalive_timeout_ms', 10000), ('grpc.min_time_between_pings_ms', 15000), ('grpc.max_pings_without_data', 0)])
+        self.channel = grpc.insecure_channel(self.addr, options=[('grpc.keepalive_time_ms', 20000), ('grpc.keepalive_timeout_ms', 60000), ('grpc.min_time_between_pings_ms', 120000), ('grpc.max_pings_without_data', 0)])
         self.channel.subscribe(callback.update, try_to_connect=True)
         self.connectivity = callback.block_until_connectivities_satisfy(
             lambda c:
@@ -158,9 +158,12 @@ class KanbanConnection:
 
 
     def reconnect(self):
+        lprint("[gRPC] reconnect connection")
         self.run()
         if self.current_message_type == message.START_SERVICE_WITHOUT_KANBAN:
             self.set_kanban(self.current_service_name, self.current_number)
+        else:
+            self._send_initial_kanban(message.START_SERVICE, self.current_service_name, self.current_number)
 
     def set_current_service_name(self, service_name):
         self.current_service_name = service_name

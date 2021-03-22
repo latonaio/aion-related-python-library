@@ -157,6 +157,8 @@ class KanbanConnectionAsync(KanbanConnection):
         self.check_connectivity()
         if self.current_message_type == message.START_SERVICE_WITHOUT_KANBAN:
             self.set_kanban(self.current_service_name, self.current_number)
+        else:
+            self._send_initial_kanban(message.START_SERVICE, self.current_service_name, self.current_number)
 
     def set_current_service_name(self, service_name):
         self.current_service_name = service_name
