@@ -181,8 +181,16 @@ class KanbanConnection:
 
     def close(self):
         self.is_thread_stop = True
-        self.channel.close()
-        self.recv_kanban_queue.put(None)
+        self.output_kanban(
+                process_number = self.current_number,
+                connection_key = 'service-broker',
+                result = True,
+                metadata = {
+                    "type": "terminate",
+                    "name": self.current_service_name,
+                    "number": self.current_number
+                }
+        )
         if self.response_thread is not None:
             self.response_thread.join()
 
