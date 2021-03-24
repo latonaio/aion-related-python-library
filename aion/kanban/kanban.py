@@ -193,6 +193,7 @@ class KanbanConnection:
         )
         if self.response_thread is not None:
             self.response_thread.join()
+        lprint("[gRPC] stop microservice")
 
     def _receive_function(self):
         try:
@@ -223,10 +224,10 @@ class KanbanConnection:
                 else:
                     self.reconnect()
             elif e.code() == grpc.StatusCode.INTERNAL:
-                # when stream idle time is more than 5 minutes, grpc connection is disconnected by envoy.
-                # while that action is not wrong(long live connection is evil), it is bother by application.
-                # so we attempt to reconnect on library.
-                self.reconnect()
+                if self.is_thread_stop:
+                    lprint("[gRPC] closed connection is successful")
+                else:
+                    self.reconnect()
 
     def _send_message_to_grpc(self, message_type, body):
         m = message.Request()
