@@ -2,19 +2,20 @@
 
 # Copyright (c) 2019-2020 Latona. All rights reserved.
 
-from aion.proto import status_pb2_grpc as rpc
-from aion.proto import status_pb2 as message
 import grpc
-from google.protobuf.any_pb2 import Any
-from google.protobuf.struct_pb2 import Struct
-from google.protobuf.json_format import MessageToDict
-
 from threading import Thread, Condition
 from queue import Queue, Empty
 from dateutil import parser
 from typing import Iterator
+from retry import retry
+
+from google.protobuf.any_pb2 import Any
+from google.protobuf.struct_pb2 import Struct
+from google.protobuf.json_format import MessageToDict
 
 from aion.logger import lprint
+from aion.proto import status_pb2_grpc as rpc
+from aion.proto import status_pb2 as message
 
 
 def _grpc_message_generator(message_gueue):
@@ -135,35 +136,42 @@ class KanbanConnection:
         self.close()
 
     def run(self):
-        callback = _Callback()
-        self.channel = grpc.insecure_channel(self.addr, options=[('grpc.keepalive_time_ms', 20000), ('grpc.keepalive_timeout_ms', 60000), ('grpc.min_time_between_pings_ms', 120000), ('grpc.max_pings_without_data', 0)])
-        self.channel.subscribe(callback.update, try_to_connect=True)
-        self.connectivity = callback.block_until_connectivities_satisfy(
-            lambda c:
-            c == grpc.ChannelConnectivity.READY or
-            c == grpc.ChannelConnectivity.TRANSIENT_FAILURE
-        )
+        try:
+            callback = _Callback()
+            self.channel = grpc.insecure_channel(self.addr, options=[('grpc.keepalive_time_ms', 20000), ('grpc.keepalive_timeout_ms', 60000), ('grpc.min_time_between_pings_ms', 120000), ('grpc.max_pings_without_data', 0)])
+            self.channel.subscribe(callback.update, try_to_connect=True)
+            self.connectivity = callback.block_until_connectivities_satisfy(
+                lambda c:
+                c == grpc.ChannelConnectivity.READY or
+                c == grpc.ChannelConnectivity.TRANSIENT_FAILURE
+            )
 
-        self.conn = rpc.KanbanStub(self.channel)
+            self.conn = rpc.KanbanStub(self.channel)
 
-        self.send_kanban_queue = Queue()
-        self.recv_kanban_queue = Queue()
+            self.send_kanban_queue = Queue()
+            self.recv_kanban_queue = Queue()
 
-        self.responses = self.conn.MicroserviceConn(_grpc_message_generator(self.send_kanban_queue))
+            self.responses = self.conn.MicroserviceConn(_grpc_message_generator(self.send_kanban_queue))
 
-        self.check_connectivity()
-        self.is_thread_stop = False
-        self.response_thread = Thread(target=self._receive_function, args=())
-        self.response_thread.start()
+            self.check_connectivity()
+            self.is_thread_stop = False
+            self.response_thread = Thread(target=self._receive_function, args=())
+            self.response_thread.start()
+        except Exception as e:
+            raise e
 
 
+    @retry(exceptions=Exception, tries=5, delay=1, backoff=2, max_delay=4)
     def reconnect(self):
-        lprint("[gRPC] reconnect connection")
-        self.run()
-        if self.current_message_type == message.START_SERVICE_WITHOUT_KANBAN:
-            self.set_kanban(self.current_service_name, self.current_number)
-        else:
-            self._send_initial_kanban(message.START_SERVICE, self.current_service_name, self.current_number)
+        try:
+            lprint("[gRPC] reconnect connection")
+            self.run()
+            if self.current_message_type == message.START_SERVICE_WITHOUT_KANBAN:
+                self.set_kanban(self.current_service_name, self.current_number)
+            else:
+                self._send_initial_kanban(message.START_SERVICE, self.current_service_name, self.current_number)
+        except Exception as e:
+            raise e
 
     def set_current_service_name(self, service_name):
         self.current_service_name = service_name

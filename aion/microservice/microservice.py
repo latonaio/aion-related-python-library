@@ -34,10 +34,10 @@ class Options:
 
 def main_decorator(component, level=DEBUG, async_kanban=False):
     initialize_logger(component, level)
-  
+
     def _main_decorator(func):
-        
-        @retry(exceptions=Exception, tries=5, delay=1, backoff=2, max_delay=4)  
+
+        @retry(exceptions=Exception, tries=5, delay=1, backoff=2, max_delay=4)
         def _wrapper(*args, **kwargs):
             conn = None
             try:
