@@ -130,6 +130,8 @@ class KanbanConnection:
 
     def __init__(self, addr="localhost:11010"):
         self.addr = addr
+        self.send_kanban_queue = Queue()
+        self.recv_kanban_queue = Queue()
         self.run()
 
     def __del__(self):
@@ -148,8 +150,6 @@ class KanbanConnection:
 
             self.conn = rpc.KanbanStub(self.channel)
 
-            self.send_kanban_queue = Queue()
-            self.recv_kanban_queue = Queue()
 
             self.responses = self.conn.MicroserviceConn(_grpc_message_generator(self.send_kanban_queue))
 
@@ -171,6 +171,7 @@ class KanbanConnection:
             else:
                 self._send_initial_kanban(message.START_SERVICE, self.current_service_name, self.current_number)
         except Exception as e:
+            lprint(f"[gRPC] reconnect failuer: {e}")
             raise e
 
     def set_current_service_name(self, service_name):
@@ -209,7 +210,7 @@ class KanbanConnection:
                 if res.messageType == message.RES_CACHE_KANBAN:
                     if res.error != "":
                         lprint(f"[gRPC] get cache kanban is failed :{res.error}")
-                        self.recv_kanban_queue.put(None)
+                        continue
                     else:
                         m = _unpack_any_message(res.message, message.StatusKanban)
                         if m is None:
@@ -222,20 +223,13 @@ class KanbanConnection:
                         lprint(f"[gRPC] success to send request :{res.messageType}")
                 else:
                     lprint(f"[gRPC] invalid message type: {res.messageType}")
-        except grpc.RpcError as e:
-            self.recv_kanban_queue.put(None)
-
-            lprint(f'[gRPC] failed with code {e.code()}')
-            if e.code() == grpc.StatusCode.CANCELLED:
-                if self.is_thread_stop:
-                    lprint("[gRPC] closed connection is successful")
-                else:
-                    self.reconnect()
-            elif e.code() == grpc.StatusCode.INTERNAL:
-                if self.is_thread_stop:
-                    lprint("[gRPC] closed connection is successful")
-                else:
-                    self.reconnect()
+        except Exception as e:
+            lprint(f'[gRPC] failed with error {e}')
+            if self.is_thread_stop:
+                lprint("[gRPC] closed connection is successful")
+                self.recv_kanban_queue.put(None)
+            else:
+                self.reconnect()
 
     def _send_message_to_grpc(self, message_type, body):
         m = message.Request()
