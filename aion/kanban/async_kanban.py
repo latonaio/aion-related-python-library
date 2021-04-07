@@ -30,15 +30,6 @@ async def _grpc_message_generator(message_queue):
             break
 
 
-def _unpack_any_message(any_message, recv_message):
-    if not any_message.Is(recv_message.DESCRIPTOR):
-        lprint("cant unmarshal any message")
-        return None
-    m = recv_message()
-    any_message.Unpack(m)
-    return m
-
-
 def _pack_any_message(normal_message):
     any_m = Any()
     any_m.Pack(normal_message)
@@ -189,10 +180,7 @@ class KanbanConnectionAsync(KanbanConnection):
                         lprint(f"[gRPC] get cache kanban is failed :{res.error}")
                         await self.recv_kanban_queue.put(None)
                     else:
-                        m = _unpack_any_message(res.message, message.StatusKanban)
-                        if m is None:
-                            continue
-                        await self.recv_kanban_queue.put(m)
+                        await self.recv_kanban_queue.put(res.message)
                 elif res.messageType == message.RES_REQUEST_RESULT:
                     if res.error != "":
                         lprint(f"[gRPC] request is failed :{res.error}")
@@ -215,18 +203,16 @@ class KanbanConnectionAsync(KanbanConnection):
                 # so we attempt to reconnect on library.
                 self.reconnect()
 
-    async def _send_message_to_grpc(self, message_type, body):
-        m = message.Request()
-
-        m.messageType = message_type
-        m.message.CopyFrom(_pack_any_message(body))
-        await self.send_kanban_queue.put(m)
+    async def _send_message_to_grpc(self, req):
+        await self.send_kanban_queue.put(req)
 
     async def _send_initial_kanban(self, message_type, service_name, number):
         m = message.InitializeService()
         m.microserviceName = service_name
         m.processNumber = int(number)
-        await self._send_message_to_grpc(message_type, m)
+        req = message.Request()
+        req.initMessage.CopyFrom(m)
+        await self._send_message_to_grpc(req)
 
     async def get_one_kanban(self, service_name, number) -> Kanban:
         self._send_initial_kanban(message.START_SERVICE, service_name, number)
@@ -301,5 +287,8 @@ class KanbanConnectionAsync(KanbanConnection):
         m.processNumber = int(process_number)
         m.fileList.extend(file_list)
         m.metadata.CopyFrom(s)
-        m.deviceName = device_name
-        self._send_message_to_grpc(message.OUTPUT_AFTER_KANBAN, m)
+        m.nextDeviceName = device_name
+        req = message.Request()
+        req.message.CopyFrom(m)
+        self._send_message_to_grpc(req)
+

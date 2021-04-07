@@ -32,20 +32,6 @@ def _grpc_message_generator(message_gueue):
             lprint("send queue is closed")
             break
 
-def _unpack_any_message(any_message, recv_message):
-    if not any_message.Is(recv_message.DESCRIPTOR):
-        lprint("cant unmarshal any message")
-        return None
-    m = recv_message()
-    any_message.Unpack(m)
-    return m
-
-
-def _pack_any_message(normal_message):
-    any_m = Any()
-    any_m.Pack(normal_message)
-    return any_m
-
 
 class Kanban:
     def __init__(self, kanban):
@@ -130,8 +116,6 @@ class KanbanConnection:
 
     def __init__(self, addr="localhost:11010"):
         self.addr = addr
-        self.send_kanban_queue = Queue()
-        self.recv_kanban_queue = Queue()
         self.run()
 
     def __del__(self):
@@ -150,6 +134,8 @@ class KanbanConnection:
 
             self.conn = rpc.KanbanStub(self.channel)
 
+            self.send_kanban_queue = Queue()
+            self.recv_kanban_queue = Queue()
 
             self.responses = self.conn.MicroserviceConn(_grpc_message_generator(self.send_kanban_queue))
 
@@ -157,6 +143,7 @@ class KanbanConnection:
             self.is_thread_stop = False
             self.response_thread = Thread(target=self._receive_function, args=())
             self.response_thread.start()
+            lprint("start watch kanban")
         except Exception as e:
             raise e
 
@@ -171,7 +158,6 @@ class KanbanConnection:
             else:
                 self._send_initial_kanban(message.START_SERVICE, self.current_service_name, self.current_number)
         except Exception as e:
-            lprint(f"[gRPC] reconnect failuer: {e}")
             raise e
 
     def set_current_service_name(self, service_name):
@@ -210,12 +196,10 @@ class KanbanConnection:
                 if res.messageType == message.RES_CACHE_KANBAN:
                     if res.error != "":
                         lprint(f"[gRPC] get cache kanban is failed :{res.error}")
-                        continue
+                        self.recv_kanban_queue.put(None)
                     else:
-                        m = _unpack_any_message(res.message, message.StatusKanban)
-                        if m is None:
-                            continue
-                        self.recv_kanban_queue.put(m)
+                        lprint("[gRPC] get cache kanban")
+                        self.recv_kanban_queue.put(res.message)
                 elif res.messageType == message.RES_REQUEST_RESULT:
                     if res.error != "":
                         lprint(f"[gRPC] request is failed :{res.error}")
@@ -223,26 +207,33 @@ class KanbanConnection:
                         lprint(f"[gRPC] success to send request :{res.messageType}")
                 else:
                     lprint(f"[gRPC] invalid message type: {res.messageType}")
-        except Exception as e:
-            lprint(f'[gRPC] failed with error {e}')
-            if self.is_thread_stop:
-                lprint("[gRPC] closed connection is successful")
-                self.recv_kanban_queue.put(None)
-            else:
-                self.reconnect()
+        except grpc.RpcError as e:
+            self.recv_kanban_queue.put(None)
 
-    def _send_message_to_grpc(self, message_type, body):
-        m = message.Request()
+            lprint(f'[gRPC] failed with code {e.code()}')
+            if e.code() == grpc.StatusCode.CANCELLED:
+                if self.is_thread_stop:
+                    lprint("[gRPC] closed connection is successful")
+                else:
+                    self.reconnect()
+            elif e.code() == grpc.StatusCode.INTERNAL:
+                if self.is_thread_stop:
+                    lprint("[gRPC] closed connection is successful")
+                else:
+                    self.reconnect()
 
-        m.messageType = message_type
-        m.message.CopyFrom(_pack_any_message(body))
-        self.send_kanban_queue.put(m)
+    def _send_message_to_grpc(self, req):
+        self.send_kanban_queue.put(req)
 
-    def _send_initial_kanban(self, message_type, service_name, number):
+    def _send_initial_kanban(self, init_type, service_name, number):
         m = message.InitializeService()
+        m.initType = init_type
         m.microserviceName = service_name
         m.processNumber = int(number)
-        self._send_message_to_grpc(message_type, m)
+
+        req = message.Request()
+        req.initMessage.CopyFrom(m)
+        self._send_message_to_grpc(req)
 
     def get_one_kanban(self, service_name, number) -> Kanban:
         self._send_initial_kanban(message.START_SERVICE, service_name, number)
@@ -294,7 +285,7 @@ class KanbanConnection:
     def output_kanban(
             self, result=True, connection_key="default", output_data_path="",
             process_number=1, file_list=None, metadata=None, device_name="") -> None:
-        m = message.OutputRequest()
+        m = message.StatusKanban()
 
         if metadata is None:
             metadata = {}
@@ -313,6 +304,9 @@ class KanbanConnection:
         m.processNumber = int(process_number)
         m.fileList.extend(file_list)
         m.metadata.CopyFrom(s)
-        m.deviceName = device_name
-        self._send_message_to_grpc(message.OUTPUT_AFTER_KANBAN, m)
+        m.nextDeviceName = device_name
+
+        req = message.Request()
+        req.message.CopyFrom(m)
+        self._send_message_to_grpc(req)
 

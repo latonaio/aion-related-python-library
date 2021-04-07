@@ -5,7 +5,7 @@ def _read_requires_from_file(filename):
 
 setup(
     name = "aion",
-    version = "0.0.4",
+    version = "0.0.5",
     author="Yasumori KUBOTA",
     author_email="yasumori.k@latonaio",
     packages = find_packages(),
