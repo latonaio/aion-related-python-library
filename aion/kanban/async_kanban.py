@@ -30,12 +30,6 @@ async def _grpc_message_generator(message_queue):
             break
 
 
-def _pack_any_message(normal_message):
-    any_m = Any()
-    any_m.Pack(normal_message)
-    return any_m
-
-
 class Kanban:
     def __init__(self, kanban):
         self.kanban = kanban
@@ -122,9 +116,6 @@ class KanbanConnectionAsync(KanbanConnection):
         loop = get_event_loop()
         loop.run_until_complete(self.run())
 
-    async def __del__(self):
-        await self.close()
-
     async def run(self):
         aio.init_grpc_aio()
         self.channel = aio.insecure_channel(self.addr)
@@ -165,8 +156,21 @@ class KanbanConnectionAsync(KanbanConnection):
         if grpc.ChannelConnectivity.READY != self.connectivity:
             raise KanbanServerNotFoundError(self.addr)
 
-    async def close(self):
+    async def close(self, complete=False):
         self.is_thread_stop = True
+        connection_key = ''
+        if complete:
+            connection_key = 'service-broker'
+        await self.output_kanban(
+                process_number = self.current_number,
+                connection_key = connection_key,
+                result = complete,
+                metadata = {
+                    "type": "terminate",
+                    "name": self.current_service_name,
+                    "number": self.current_number
+                }
+        )
         await self.send_kanban_queue.put(None)
         await self.channel.close()
         if self.response_thread is not None:

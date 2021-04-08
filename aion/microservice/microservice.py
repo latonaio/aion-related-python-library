@@ -64,12 +64,13 @@ def main_decorator(component, level=DEBUG, async_kanban=False):
                     is_docker=is_docker,
                 )
                 func(*args, **kwargs, opt=options)
+                if conn is not None:
+                    conn.close(complete=True)
             except Exception as e:
                 lprint_exception(e)
-                raise
-            finally:
                 if conn is not None:
                     conn.close()
+                raise
             return
         return _wrapper
     return _main_decorator

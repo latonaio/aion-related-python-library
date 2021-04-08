@@ -118,9 +118,6 @@ class KanbanConnection:
         self.addr = addr
         self.run()
 
-    def __del__(self):
-        self.close()
-
     def run(self):
         try:
             callback = _Callback()
@@ -174,12 +171,15 @@ class KanbanConnection:
         if grpc.ChannelConnectivity.READY != self.connectivity:
             raise KanbanServerNotFoundError(self.addr)
 
-    def close(self):
+    def close(self, complete=False):
         self.is_thread_stop = True
+        connection_key = ''
+        if complete:
+            connection_key = 'service-broker'
         self.output_kanban(
                 process_number = self.current_number,
-                connection_key = 'service-broker',
-                result = True,
+                connection_key = connection_key,
+                result = complete,
                 metadata = {
                     "type": "terminate",
                     "name": self.current_service_name,
