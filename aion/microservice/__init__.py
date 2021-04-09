@@ -4,4 +4,4 @@
 
 __all__ = ["microservice"]
 
-from aion.microservice.microservice import main_decorator, Options
+from aion.microservice.microservice import main_decorator, Options, WITH_KANBAN, WITHOUT_KANBAN

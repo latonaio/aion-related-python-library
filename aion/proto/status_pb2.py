@@ -22,7 +22,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'Z/bitbucket.org/latonaio/aion-core/proto/kanbanpb',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1bproto/kanbanpb/status.proto\x12\x08kanbanpb\x1a\x1cgoogle/protobuf/struct.proto\x1a\x19google/protobuf/any.proto\"\xdc\x01\n\x0cStatusKanban\x12\x0f\n\x07startAt\x18\x01 \x01(\t\x12\x10\n\x08\x66inishAt\x18\x02 \x01(\t\x12\x16\n\x0enextDeviceName\x18\x03 \x01(\t\x12\x15\n\rconnectionKey\x18\x04 \x01(\t\x12\x15\n\rprocessNumber\x18\x05 \x01(\x05\x12\x14\n\x0cpriorSuccess\x18\x06 \x01(\x08\x12\x10\n\x08\x64\x61taPath\x18\x07 \x01(\t\x12\x10\n\x08\x66ileList\x18\x08 \x03(\t\x12)\n\x08metadata\x18\t \x01(\x0b\x32\x17.google.protobuf.Struct\"\x8a\x01\n\nSendKanban\x12\x12\n\ndeviceName\x18\x01 \x01(\t\x12\x12\n\ndeviceAddr\x18\x02 \x01(\t\x12\x13\n\x0bnextService\x18\x03 \x01(\t\x12\x12\n\nnextNumber\x18\x04 \x01(\x05\x12+\n\x0b\x61\x66terKanban\x18\x05 \x01(\x0b\x32\x16.kanbanpb.StatusKanban\"&\n\x05\x43hunk\x12\x0f\n\x07\x63ontext\x18\x01 \x01(\x0c\x12\x0c\n\x04name\x18\x02 \x01(\t\"_\n\x0bSendContext\x12)\n\x04\x63ode\x18\x01 \x01(\x0e\x32\x1b.kanbanpb.UploadRequestCode\x12%\n\x07\x63ontext\x18\x02 \x01(\x0b\x32\x14.google.protobuf.Any\"O\n\x0cUploadStatus\x12\x0f\n\x07Message\x18\x01 \x01(\t\x12.\n\nstatusCode\x18\x02 \x01(\x0e\x32\x1a.kanbanpb.UploadStatusCode\"p\n\x11InitializeService\x12*\n\x08initType\x18\x01 \x01(\x0e\x32\x18.kanbanpb.InitializeType\x12\x18\n\x10microserviceName\x18\x02 \x01(\t\x12\x15\n\rprocessNumber\x18\x03 \x01(\x05\"z\n\x07Request\x12)\n\x07message\x18\x02 \x01(\x0b\x32\x16.kanbanpb.StatusKanbanH\x00\x12\x32\n\x0binitMessage\x18\x03 \x01(\x0b\x32\x1b.kanbanpb.InitializeServiceH\x00\x42\x10\n\x0erequestMessage\"o\n\x08Response\x12+\n\x0bmessageType\x18\x01 \x01(\x0e\x32\x16.kanbanpb.ResponseType\x12\'\n\x07message\x18\x02 \x01(\x0b\x32\x16.kanbanpb.StatusKanban\x12\r\n\x05\x65rror\x18\x03 \x01(\t*r\n\x11UploadRequestCode\x12\x11\n\rSendingKanban\x10\x00\x12\x14\n\x10SendingFile_CONT\x10\x01\x12\x13\n\x0fSendingFile_EOF\x10\x02\x12\x16\n\x12SendingFile_FAILED\x10\x03\x12\x07\n\x03\x45OS\x10\x04*3\n\x10UploadStatusCode\x12\x0b\n\x07Unknown\x10\x00\x12\n\n\x06\x46\x61iled\x10\x01\x12\x06\n\x02OK\x10\x02*E\n\x0eInitializeType\x12\x11\n\rSTART_SERVICE\x10\x00\x12 \n\x1cSTART_SERVICE_WITHOUT_KANBAN\x10\x01*<\n\x0cResponseType\x12\x14\n\x10RES_CACHE_KANBAN\x10\x00\x12\x16\n\x12RES_REQUEST_RESULT\x10\x01\x32G\n\x06Kanban\x12=\n\x10MicroserviceConn\x12\x11.kanbanpb.Request\x1a\x12.kanbanpb.Response(\x01\x30\x01\x32\x9a\x01\n\x0cSendAnything\x12\x43\n\x11ServiceBrokerConn\x12\x14.kanbanpb.SendKanban\x1a\x14.kanbanpb.SendKanban(\x01\x30\x01\x12\x45\n\x12SendToOtherDevices\x12\x15.kanbanpb.SendContext\x1a\x16.kanbanpb.UploadStatus(\x01\x42\x31Z/bitbucket.org/latonaio/aion-core/proto/kanbanpbb\x06proto3'
+  serialized_pb=b'\n\x1bproto/kanbanpb/status.proto\x12\x08kanbanpb\x1a\x1cgoogle/protobuf/struct.proto\x1a\x19google/protobuf/any.proto\"\xdc\x01\n\x0cStatusKanban\x12\x0f\n\x07startAt\x18\x01 \x01(\t\x12\x10\n\x08\x66inishAt\x18\x02 \x01(\t\x12\x16\n\x0enextDeviceName\x18\x03 \x01(\t\x12\x15\n\rconnectionKey\x18\x04 \x01(\t\x12\x15\n\rprocessNumber\x18\x05 \x01(\x05\x12\x14\n\x0cpriorSuccess\x18\x06 \x01(\x08\x12\x10\n\x08\x64\x61taPath\x18\x07 \x01(\t\x12\x10\n\x08\x66ileList\x18\x08 \x03(\t\x12)\n\x08metadata\x18\t \x01(\x0b\x32\x17.google.protobuf.Struct\"\x8a\x01\n\nSendKanban\x12\x12\n\ndeviceName\x18\x01 \x01(\t\x12\x12\n\ndeviceAddr\x18\x02 \x01(\t\x12\x13\n\x0bnextService\x18\x03 \x01(\t\x12\x12\n\nnextNumber\x18\x04 \x01(\x05\x12+\n\x0b\x61\x66terKanban\x18\x05 \x01(\x0b\x32\x16.kanbanpb.StatusKanban\"&\n\x05\x43hunk\x12\x0f\n\x07\x63ontext\x18\x01 \x01(\x0c\x12\x0c\n\x04name\x18\x02 \x01(\t\"_\n\x0bSendContext\x12)\n\x04\x63ode\x18\x01 \x01(\x0e\x32\x1b.kanbanpb.UploadRequestCode\x12%\n\x07\x63ontext\x18\x02 \x01(\x0b\x32\x14.google.protobuf.Any\"O\n\x0cUploadStatus\x12\x0f\n\x07Message\x18\x01 \x01(\t\x12.\n\nstatusCode\x18\x02 \x01(\x0e\x32\x1a.kanbanpb.UploadStatusCode\"p\n\x11InitializeService\x12*\n\x08initType\x18\x01 \x01(\x0e\x32\x18.kanbanpb.InitializeType\x12\x18\n\x10microserviceName\x18\x02 \x01(\t\x12\x15\n\rprocessNumber\x18\x03 \x01(\x05\"L\n\x07Request\x12\x18\n\x10microserviceName\x18\x01 \x01(\t\x12\'\n\x07message\x18\x02 \x01(\x0b\x32\x16.kanbanpb.StatusKanban\"C\n\x08Response\x12(\n\x06status\x18\x01 \x01(\x0e\x32\x18.kanbanpb.ResponseStatus\x12\r\n\x05\x65rror\x18\x02 \x01(\t*r\n\x11UploadRequestCode\x12\x11\n\rSendingKanban\x10\x00\x12\x14\n\x10SendingFile_CONT\x10\x01\x12\x13\n\x0fSendingFile_EOF\x10\x02\x12\x16\n\x12SendingFile_FAILED\x10\x03\x12\x07\n\x03\x45OS\x10\x04*3\n\x10UploadStatusCode\x12\x0b\n\x07Unknown\x10\x00\x12\n\n\x06\x46\x61iled\x10\x01\x12\x06\n\x02OK\x10\x02*E\n\x0eInitializeType\x12\x11\n\rSTART_SERVICE\x10\x00\x12 \n\x1cSTART_SERVICE_WITHOUT_KANBAN\x10\x01*)\n\x0eResponseStatus\x12\x0b\n\x07SUCCESS\x10\x00\x12\n\n\x06\x46\x41ILED\x10\x01\x32\x85\x01\n\x06Kanban\x12\x46\n\rReceiveKanban\x12\x1b.kanbanpb.InitializeService\x1a\x16.kanbanpb.StatusKanban0\x01\x12\x33\n\nSendKanban\x12\x11.kanbanpb.Request\x1a\x12.kanbanpb.Response2\x9a\x01\n\x0cSendAnything\x12\x43\n\x11ServiceBrokerConn\x12\x14.kanbanpb.SendKanban\x1a\x14.kanbanpb.SendKanban(\x01\x30\x01\x12\x45\n\x12SendToOtherDevices\x12\x15.kanbanpb.SendContext\x1a\x16.kanbanpb.UploadStatus(\x01\x42\x31Z/bitbucket.org/latonaio/aion-core/proto/kanbanpbb\x06proto3'
   ,
   dependencies=[google_dot_protobuf_dot_struct__pb2.DESCRIPTOR,google_dot_protobuf_dot_any__pb2.DESCRIPTOR,])
 
@@ -61,8 +61,8 @@ _UPLOADREQUESTCODE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1031,
-  serialized_end=1145,
+  serialized_start=941,
+  serialized_end=1055,
 )
 _sym_db.RegisterEnumDescriptor(_UPLOADREQUESTCODE)
 
@@ -92,8 +92,8 @@ _UPLOADSTATUSCODE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1147,
-  serialized_end=1198,
+  serialized_start=1057,
+  serialized_end=1108,
 )
 _sym_db.RegisterEnumDescriptor(_UPLOADSTATUSCODE)
 
@@ -118,38 +118,38 @@ _INITIALIZETYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1200,
-  serialized_end=1269,
+  serialized_start=1110,
+  serialized_end=1179,
 )
 _sym_db.RegisterEnumDescriptor(_INITIALIZETYPE)
 
 InitializeType = enum_type_wrapper.EnumTypeWrapper(_INITIALIZETYPE)
-_RESPONSETYPE = _descriptor.EnumDescriptor(
-  name='ResponseType',
-  full_name='kanbanpb.ResponseType',
+_RESPONSESTATUS = _descriptor.EnumDescriptor(
+  name='ResponseStatus',
+  full_name='kanbanpb.ResponseStatus',
   filename=None,
   file=DESCRIPTOR,
   create_key=_descriptor._internal_create_key,
   values=[
     _descriptor.EnumValueDescriptor(
-      name='RES_CACHE_KANBAN', index=0, number=0,
+      name='SUCCESS', index=0, number=0,
       serialized_options=None,
       type=None,
       create_key=_descriptor._internal_create_key),
     _descriptor.EnumValueDescriptor(
-      name='RES_REQUEST_RESULT', index=1, number=1,
+      name='FAILED', index=1, number=1,
       serialized_options=None,
       type=None,
       create_key=_descriptor._internal_create_key),
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1271,
-  serialized_end=1331,
+  serialized_start=1181,
+  serialized_end=1222,
 )
-_sym_db.RegisterEnumDescriptor(_RESPONSETYPE)
+_sym_db.RegisterEnumDescriptor(_RESPONSESTATUS)
 
-ResponseType = enum_type_wrapper.EnumTypeWrapper(_RESPONSETYPE)
+ResponseStatus = enum_type_wrapper.EnumTypeWrapper(_RESPONSESTATUS)
 SendingKanban = 0
 SendingFile_CONT = 1
 SendingFile_EOF = 2
@@ -160,8 +160,8 @@ Failed = 1
 OK = 2
 START_SERVICE = 0
 START_SERVICE_WITHOUT_KANBAN = 1
-RES_CACHE_KANBAN = 0
-RES_REQUEST_RESULT = 1
+SUCCESS = 0
+FAILED = 1
 
 
 
@@ -485,15 +485,15 @@ _REQUEST = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='message', full_name='kanbanpb.Request.message', index=0,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      name='microserviceName', full_name='kanbanpb.Request.microserviceName', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='initMessage', full_name='kanbanpb.Request.initMessage', index=1,
-      number=3, type=11, cpp_type=10, label=1,
+      name='message', full_name='kanbanpb.Request.message', index=1,
+      number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -509,14 +509,9 @@ _REQUEST = _descriptor.Descriptor(
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
-    _descriptor.OneofDescriptor(
-      name='requestMessage', full_name='kanbanpb.Request.requestMessage',
-      index=0, containing_type=None,
-      create_key=_descriptor._internal_create_key,
-    fields=[]),
   ],
   serialized_start=794,
-  serialized_end=916,
+  serialized_end=870,
 )
 
 
@@ -529,22 +524,15 @@ _RESPONSE = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='messageType', full_name='kanbanpb.Response.messageType', index=0,
+      name='status', full_name='kanbanpb.Response.status', index=0,
       number=1, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='message', full_name='kanbanpb.Response.message', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='error', full_name='kanbanpb.Response.error', index=2,
-      number=3, type=9, cpp_type=9, label=1,
+      name='error', full_name='kanbanpb.Response.error', index=1,
+      number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -561,8 +549,8 @@ _RESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=918,
-  serialized_end=1029,
+  serialized_start=872,
+  serialized_end=939,
 )
 
 _STATUSKANBAN.fields_by_name['metadata'].message_type = google_dot_protobuf_dot_struct__pb2._STRUCT
@@ -572,15 +560,7 @@ _SENDCONTEXT.fields_by_name['context'].message_type = google_dot_protobuf_dot_an
 _UPLOADSTATUS.fields_by_name['statusCode'].enum_type = _UPLOADSTATUSCODE
 _INITIALIZESERVICE.fields_by_name['initType'].enum_type = _INITIALIZETYPE
 _REQUEST.fields_by_name['message'].message_type = _STATUSKANBAN
-_REQUEST.fields_by_name['initMessage'].message_type = _INITIALIZESERVICE
-_REQUEST.oneofs_by_name['requestMessage'].fields.append(
-  _REQUEST.fields_by_name['message'])
-_REQUEST.fields_by_name['message'].containing_oneof = _REQUEST.oneofs_by_name['requestMessage']
-_REQUEST.oneofs_by_name['requestMessage'].fields.append(
-  _REQUEST.fields_by_name['initMessage'])
-_REQUEST.fields_by_name['initMessage'].containing_oneof = _REQUEST.oneofs_by_name['requestMessage']
-_RESPONSE.fields_by_name['messageType'].enum_type = _RESPONSETYPE
-_RESPONSE.fields_by_name['message'].message_type = _STATUSKANBAN
+_RESPONSE.fields_by_name['status'].enum_type = _RESPONSESTATUS
 DESCRIPTOR.message_types_by_name['StatusKanban'] = _STATUSKANBAN
 DESCRIPTOR.message_types_by_name['SendKanban'] = _SENDKANBAN
 DESCRIPTOR.message_types_by_name['Chunk'] = _CHUNK
@@ -592,7 +572,7 @@ DESCRIPTOR.message_types_by_name['Response'] = _RESPONSE
 DESCRIPTOR.enum_types_by_name['UploadRequestCode'] = _UPLOADREQUESTCODE
 DESCRIPTOR.enum_types_by_name['UploadStatusCode'] = _UPLOADSTATUSCODE
 DESCRIPTOR.enum_types_by_name['InitializeType'] = _INITIALIZETYPE
-DESCRIPTOR.enum_types_by_name['ResponseType'] = _RESPONSETYPE
+DESCRIPTOR.enum_types_by_name['ResponseStatus'] = _RESPONSESTATUS
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 StatusKanban = _reflection.GeneratedProtocolMessageType('StatusKanban', (_message.Message,), {
@@ -661,13 +641,23 @@ _KANBAN = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=1333,
-  serialized_end=1404,
+  serialized_start=1225,
+  serialized_end=1358,
   methods=[
   _descriptor.MethodDescriptor(
-    name='MicroserviceConn',
-    full_name='kanbanpb.Kanban.MicroserviceConn',
+    name='ReceiveKanban',
+    full_name='kanbanpb.Kanban.ReceiveKanban',
     index=0,
+    containing_service=None,
+    input_type=_INITIALIZESERVICE,
+    output_type=_STATUSKANBAN,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='SendKanban',
+    full_name='kanbanpb.Kanban.SendKanban',
+    index=1,
     containing_service=None,
     input_type=_REQUEST,
     output_type=_RESPONSE,
@@ -687,8 +677,8 @@ _SENDANYTHING = _descriptor.ServiceDescriptor(
   index=1,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=1407,
-  serialized_end=1561,
+  serialized_start=1361,
+  serialized_end=1515,
   methods=[
   _descriptor.MethodDescriptor(
     name='ServiceBrokerConn',

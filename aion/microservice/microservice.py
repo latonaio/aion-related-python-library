@@ -4,12 +4,16 @@
 
 from aion.logger import initialize_logger, lprint_exception, lprint
 from aion.kanban import KanbanConnection, KanbanConnectionAsync, KanbanServerNotFoundError
+from aion.proto import status_pb2 as message
 from logging import DEBUG
 import os
 from retry import retry
 
 NORMAL_CONNECTION_MODE = "normal"
 DIRECT_CONNECTION_MODE = "direct"
+
+WITH_KANBAN = True
+WITHOUT_KANBAN = False
 
 
 class Options:
@@ -32,8 +36,8 @@ class Options:
         return self.docker
 
 
-def main_decorator(component, level=DEBUG, async_kanban=False):
-    initialize_logger(component, level)
+def main_decorator(service_name, init_type, level=DEBUG, async_kanban=False):
+    initialize_logger(service_name, level)
 
     def _main_decorator(func):
 
@@ -42,18 +46,22 @@ def main_decorator(component, level=DEBUG, async_kanban=False):
             conn = None
             try:
                 addr = os.environ.get("KANBAN_ADDR")
+                n = os.environ.get("MS_NUMBER")
+                n = int(n) if n else 1
 
                 connection_mode = os.environ.get("CONNECTION_MODE", NORMAL_CONNECTION_MODE)
                 if connection_mode == DIRECT_CONNECTION_MODE:
                     addr = "aion-statuskanban:10000"
 
+                if init_type == WITH_KANBAN:
+                    init_msg_type = message.START_SERVICE
+                else:
+                    init_msg_type = message.START_SERVICE_WITHOUT_KANBAN
+
                 if async_kanban:
                     conn = KanbanConnectionAsync(addr) if addr else KanbanConnectionAsync()
                 else:
-                    conn = KanbanConnection(addr) if addr else KanbanConnection()
-
-                n = os.environ.get("MS_NUMBER")
-                n = int(n) if n else 1
+                    conn = KanbanConnection(addr, init_msg_type, service_name, n) if addr else KanbanConnection("aion-statuskanban:10000", init_msg_type, service_name, n)
 
                 docker = os.environ.get("IS_DOCKER")
                 is_docker = True if docker else False

@@ -14,8 +14,13 @@ class KanbanStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.MicroserviceConn = channel.stream_stream(
-                '/kanbanpb.Kanban/MicroserviceConn',
+        self.ReceiveKanban = channel.unary_stream(
+                '/kanbanpb.Kanban/ReceiveKanban',
+                request_serializer=proto_dot_kanbanpb_dot_status__pb2.InitializeService.SerializeToString,
+                response_deserializer=proto_dot_kanbanpb_dot_status__pb2.StatusKanban.FromString,
+                )
+        self.SendKanban = channel.unary_unary(
+                '/kanbanpb.Kanban/SendKanban',
                 request_serializer=proto_dot_kanbanpb_dot_status__pb2.Request.SerializeToString,
                 response_deserializer=proto_dot_kanbanpb_dot_status__pb2.Response.FromString,
                 )
@@ -24,9 +29,15 @@ class KanbanStub(object):
 class KanbanServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def MicroserviceConn(self, request_iterator, context):
+    def ReceiveKanban(self, request, context):
         """最新のCカンバンを取得する
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SendKanban(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -34,8 +45,13 @@ class KanbanServicer(object):
 
 def add_KanbanServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'MicroserviceConn': grpc.stream_stream_rpc_method_handler(
-                    servicer.MicroserviceConn,
+            'ReceiveKanban': grpc.unary_stream_rpc_method_handler(
+                    servicer.ReceiveKanban,
+                    request_deserializer=proto_dot_kanbanpb_dot_status__pb2.InitializeService.FromString,
+                    response_serializer=proto_dot_kanbanpb_dot_status__pb2.StatusKanban.SerializeToString,
+            ),
+            'SendKanban': grpc.unary_unary_rpc_method_handler(
+                    servicer.SendKanban,
                     request_deserializer=proto_dot_kanbanpb_dot_status__pb2.Request.FromString,
                     response_serializer=proto_dot_kanbanpb_dot_status__pb2.Response.SerializeToString,
             ),
@@ -50,7 +66,7 @@ class Kanban(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def MicroserviceConn(request_iterator,
+    def ReceiveKanban(request,
             target,
             options=(),
             channel_credentials=None,
@@ -60,7 +76,24 @@ class Kanban(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.stream_stream(request_iterator, target, '/kanbanpb.Kanban/MicroserviceConn',
+        return grpc.experimental.unary_stream(request, target, '/kanbanpb.Kanban/ReceiveKanban',
+            proto_dot_kanbanpb_dot_status__pb2.InitializeService.SerializeToString,
+            proto_dot_kanbanpb_dot_status__pb2.StatusKanban.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SendKanban(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/kanbanpb.Kanban/SendKanban',
             proto_dot_kanbanpb_dot_status__pb2.Request.SerializeToString,
             proto_dot_kanbanpb_dot_status__pb2.Response.FromString,
             options, channel_credentials,
