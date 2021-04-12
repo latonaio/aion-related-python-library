@@ -61,7 +61,7 @@ def main_decorator(service_name, init_type, level=DEBUG, async_kanban=False):
                 if async_kanban:
                     conn = KanbanConnectionAsync(addr) if addr else KanbanConnectionAsync()
                 else:
-                    conn = KanbanConnection(addr, init_msg_type, service_name, n) if addr else KanbanConnection("aion-statuskanban:10000", init_msg_type, service_name, n)
+                    conn = KanbanConnection(addr, init_msg_type, service_name, n) if addr else KanbanConnection("aion-statuskanban:11010", init_msg_type, service_name, n)
 
                 docker = os.environ.get("IS_DOCKER")
                 is_docker = True if docker else False

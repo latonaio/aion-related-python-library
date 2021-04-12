@@ -107,22 +107,23 @@ class KanbanConnection:
     def run(self):
         try:
             callback = _Callback()
-            self.recv_channel = grpc.insecure_channel(self.addr, options=[('grpc.keepalive_time_ms', 20000), ('grpc.keepalive_timeout_ms', 60000), ('grpc.min_time_between_pings_ms', 120000), ('grpc.max_pings_without_data', 0)])
-            self.recv_channel.subscribe(callback.update, try_to_connect=True)
+            self.channel = grpc.insecure_channel(self.addr)
+            self.channel = grpc.insecure_channel(self.addr, options=[('grpc.keepalive_time_ms', 20000), ('grpc.keepalive_timeout_ms', 60000), ('grpc.min_time_between_pings_ms', 120000), ('grpc.max_pings_without_data', 0)])
+            self.channel.subscribe(callback.update, try_to_connect=True)
             self.connectivity = callback.block_until_connectivities_satisfy(
                 lambda c:
                 c == grpc.ChannelConnectivity.READY or
                 c == grpc.ChannelConnectivity.TRANSIENT_FAILURE
             )
-            self.recv_conn = rpc.KanbanStub(self.recv_channel)
+            self.recv_conn = rpc.KanbanStub(self.channel)
             self.responses = self.recv_conn.ReceiveKanban(message.InitializeService(
                 initType=self.init_type,
                 microserviceName=self.service_name,
                 processNumber=self.process_number
             ))
 
-            self.send_channel = grpc.insecure_channel(self.addr, options=[('grpc.keepalive_time_ms', 20000), ('grpc.keepalive_timeout_ms', 60000), ('grpc.min_time_between_pings_ms', 120000), ('grpc.max_pings_without_data', 0)])
-            self.send_conn = rpc.KanbanStub(self.recv_channel)
+            #self.send_channel = grpc.insecure_channel(self.addr)
+            self.send_conn = rpc.KanbanStub(self.channel)
 
             self.check_connectivity()
             self.is_thread_stop = False
@@ -169,11 +170,10 @@ class KanbanConnection:
         try:
             for res in self.responses:
                 lprint("[gRPC] get cache kanban")
-                self.recv_kanban_queue.put(res.message)
+                self.recv_kanban_queue.put(res)
         except Exception as e:
-            self.response.cancel()
-            self.recv_channel.close()
-            self.send_channel.close()
+            self.responses.cancel()
+            self.channel.close()
             lprint(f'[gRPC] exception caused: {e}')
             if self.is_thread_stop:
                 lprint("[gRPC] closed connection is successful")
@@ -225,7 +225,8 @@ class KanbanConnection:
         m.nextDeviceName = device_name
 
         self.send_conn.SendKanban(message.Request(
-            microserviceName=self.srevice_name,
+            microserviceName=self.service_name,
             message=m
         ))
+        lprint("[gRPC] send message to status-kanban")
 
