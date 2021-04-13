@@ -180,7 +180,7 @@ class KanbanConnection:
             else:
                 self.reconnect()
 
-    def get_one_kanban(self, service_name, number) -> Kanban:
+    def get_one_kanban(self) -> Kanban:
         try:
             k = self.recv_kanban_queue.get()
             if k is None:
@@ -190,7 +190,7 @@ class KanbanConnection:
 
         return Kanban(k)
 
-    def get_kanban_itr(self, service_name: str, number: int) -> Iterator[Kanban]:
+    def get_kanban_itr(self) -> Iterator[Kanban]:
         try:
             while True:
                 k = self.recv_kanban_queue.get()
