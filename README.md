@@ -1,8 +1,21 @@
 ## aion-related-python-library
 aion-related-python-libraryはAIONのマイクロサービスで利用するpythonライブラリーです。
 
+## 動作環境
+動作には以下の環境であることを前提とします。 AIONのプラットフォーム上での動作を前提としています。 使用する際は、事前にAIONの動作環境を用意してください。 
+
+- ARM CPU搭載のデバイス(NVIDIA Jetson シリーズ等)  
+  
+- OS: Linux Ubuntu 
+  
+- CPU: ARM64  
+  
+- Kubernetes  
+  
+- AION のリソース  
+
 ## 概要
-aion-related-python-libraryには以下のライブラリーが含まれています。
+aion-related-python-library内のaionディレクトリ以下にライブラリーが含まれています。
 ```
 kanban：
     kanbanサーバーへの問い合わせ
@@ -28,7 +41,7 @@ proto：
 ```
 
 ## 利用方法
-このリポジトリをクローンした後、コンテナにマウントし、ライブラリーをインストールしてください。
+このリポジトリをクローンし、カレントディレクトリにしてください。その後、以下の手順でコンテナにマウントし、ライブラリーをインストールしてください。
 ```
 $ docker exec -it [コンテナ名] bash  #コンテナに入る
 $ apt-get install python3-dev libmysqlclient-dev  #mysql_config: not foundエラーの対策
@@ -37,11 +50,3 @@ $ pip install .
 ```
 Dockerfileや、docker-compose.ymlに記載して使用する方法は、testディレクトリ配下のファイルを参照してください。
 
-## 動作環境
-動作には以下の環境であることを前提とします。 AIONのプラットフォーム上での動作を前提としています。 使用する際は、事前にAIONの動作環境を用意してください。 
-
--　ARM CPU搭載のデバイス(NVIDIA Jetson シリーズ等)  
--　OS: Linux Ubuntu OS  
--　CPU: ARM64  
--　Kubernetes  
--　AION のリソース  
